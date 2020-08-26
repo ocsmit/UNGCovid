@@ -4,6 +4,7 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 import datetime
+import webbrowser
 
 url = "https://ung.edu/together/managing-covid"
 
@@ -11,6 +12,19 @@ data = Scrape(url).full_dict()
 
 # Title
 st.title("UNG Confirmed COVID Cases")
+
+st.write('This is a tracking app for the University of North Georgia that '
+         'aims to present the data in a more useful manner than that provided '
+         'by the university by scraping their web table, processing the data, '
+         'and outputting it here.')
+
+# Sidebar links
+
+if st.sidebar.button('UNG Data Site'):
+    webbrowser.open_new_tab(url)
+
+if st.sidebar.button('Github'):
+    webbrowser.open_new_tab('https://github.com/ocsmit/UNGCovid')
 
 # Total number of cases
 st.subheader("Total Cases Reported")
