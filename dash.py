@@ -5,6 +5,9 @@ import numpy as np
 import matplotlib.pyplot as plt
 import datetime
 import webbrowser
+import altair as alt
+import plotly.express as px
+
 
 url = "https://ung.edu/together/managing-covid"
 
@@ -73,9 +76,22 @@ st.line_chart(counts['Reported Cases'].cumsum())
 plt.plot(counts.cumsum())
 
 
+# Campus distribution chart
+st.subheader("Campus Distribution")
+campus_count = df.groupby(['Campus']).count()
+campus_count.columns = ['Reported Cases','','','','']
+
+campus_count['Reported Cases'].plot(kind='barh')
+
+fig = px.pie(campus_count.reset_index(), values='Reported Cases',
+names='Campus')
+
+st.plotly_chart(fig)
 
 # Show Campuses on a map
 if st.checkbox('Show Campus Locations'):
         st.subheader('Campus Locations')
         st.map(df_t)
+
+
 
