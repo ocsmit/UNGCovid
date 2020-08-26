@@ -87,16 +87,20 @@ class Scrape:
         oak = [34.2347566, -83.8676613]
         blue = [34.8512143, -84.3388137]
         ocon = [33.866467, -83.4259915]
+        cumm = [34.2241064, -84.1085789]
         for i in range(len(campus)):
-            if campus[i] =="Oconee Campus":
+            if "Oconee Campus" in campus[i]:
                 lat[i] = ocon[0]
                 lon[i] = ocon[1]
-            elif campus[i] == "Gainesville Campus":
+            elif "Gainesville Campus" in campus[i]:
                 lat[i] = oak[0]
                 lon[i] = oak[1]
-            elif campus[i] == "Blue Ridge Campus":
+            elif "Blue Ridge Campus" in campus[i]:
                 lat[i] = blue[0]
                 lon[i] = blue[1]
+            elif "Cumming Campus" in campus[i]:
+                lat[i] = cumm[0]
+                lon[i] = cumm[1]
             else:
                 lat[i] = dahl[0]
                 lon[i] = dahl[1]
