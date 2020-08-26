@@ -2,7 +2,7 @@ from get_data import Scrape
 import streamlit as st
 import pandas as pd
 import numpy as np
-import matplotlib
+import matplotlib.pyplot as plt
 import datetime
 
 url = "https://ung.edu/together/managing-covid"
@@ -51,7 +51,14 @@ df['day'] = df.index.date
 counts = df.groupby(['day']).count()
 counts.columns = ['Reported Cases','','','','']
 
+st.subheader("Number Of Reported Cases Each Day")
 st.bar_chart(counts['Reported Cases'])
+
+st.subheader("Cumulative Case Chart")  
+st.line_chart(counts['Reported Cases'].cumsum())
+plt.plot(counts.cumsum())
+
+
 
 # Show Campuses on a map
 if st.checkbox('Show Campus Locations'):
