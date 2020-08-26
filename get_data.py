@@ -27,7 +27,8 @@ class Scrape:
 
         date = []
         for tt in self.table[0].find_all('tr')[1:]:
-            date.append(tt.find_all('td')[0].text)
+            d = (tt.find_all('td')[0].text)
+            date.append(d.replace("/", "-"))
 
         self.date = date
 
@@ -57,21 +58,22 @@ class Scrape:
 
         impact = []
         for tt in self.table[0].find_all('tr')[1:]:
-            impact.append(tt.find_all('td')[3].text)
-        
-        impact1 = "Anyone who may have been in contact with the student \
-                   has been notified, and all health and safety protocols \
-                   are being followed consistent with Georgia Department \
-                   of Public Health Protocols."
+            impact_txt = tt.find_all('td')[3].text
+            if impact_txt == str('Anyone who may have been in contact with '
+                                 'the student has been notified, and all '
+                                 'health and safety protocols are being '
+                                 'followed consistent with Georgia Department ' 
+                                 'of Public Health Protocols.'):
+                impact.append(1)
 
-
-
-        impact_class = []
-        #for i in range(len(impact)):
-        #    if impact[i] == impact1:
-        #        impact_class[i].append(2)
-        #    else:
-        #        impact_class[i].append(1)
+            elif impact_txt == str('Anyone who may have been in contact with'
+                                   'the employee has been notified, and all'
+                                   'health and safety protocols are being'
+                                   'followed consistent with Georgia'
+                                   'Department of Public Health Protocols.'):
+                impact.append(1)
+            else:
+                impact.append(0)
 
         self.impact = impact
 
@@ -82,12 +84,33 @@ class Scrape:
         people = self.get_person()
         campus = self.get_campus()
         impact = self.get_impact()
+        lon =  [None] * len(campus)
+        lat = [None] * len(campus)
         number = []
+
+        dahl = [34.5278789, -83.9844275]
+        oak = [34.2347566, -83.8676613]
+        blue = [34.8512143, -84.3388137]
+        ocon = [33.866467, -83.4259915]
+        for i in range(len(campus)):
+            if campus[i] =="Oconee Campus":
+                lat[i] = ocon[0]
+                lon[i] = ocon[1]
+            elif campus[i] == "Gainesville Campus":
+                lat[i] = oak[0]
+                lon[i] = oak[1]
+            elif campus[i] == "Blue Ridge Campus":
+                lat[i] = blue[0]
+                lon[i] = blue[1]
+            else:
+                lat[i] = dahl[0]
+                lon[i] = dahl[1]
+
         for i in range(len(people)):
             number.append(i)
 
         self.dict = dict((z[0],list(z[1:])) for z in zip(number, dates, people,
-            campus, impact))
+            campus, impact, lat, lon))
 
         return self.dict
 
