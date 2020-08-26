@@ -33,8 +33,11 @@ class Scrape:
 
         person = []
         for tt in self.table[0].find_all('tr')[1:]:
-            person.append(tt.find_all('td')[1].text)
-
+            tmp = tt.find_all('td')[1].text
+            if "Student" in tmp:
+                person.append("Student")
+            else:
+                person.append(tmp)
         self.person = person
 
         return self.person
