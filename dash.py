@@ -48,9 +48,10 @@ def data_table():
 
     # Edit date
     df_t.time = pd.to_datetime(df_t['Date'], format='%m-%d-%y')
-    df_t['Date'] = pd.to_datetime(df_t['Date'])
-    dataframe = df_t.set_index('Date')
-    dataframe['day'] = dataframe.index.date
+    
+    dataframe = df_t.set_index(df_t.time)
+    dataframe['day'] = dataframe.index.date 
+
     return dataframe
 
 def impacts():
@@ -72,7 +73,8 @@ df1 = tmp.copy(deep=True)
 
 # Show data with out latitude and longitude columns
 if st.checkbox("Data Table"):
-    st.dataframe(df1.drop(['latitude', 'longitude', 'day'], 1))
+    d = data_table().set_index('day')
+    st.dataframe(d.drop(['latitude', 'longitude', 'Date'], 1))
     st.subheader("Impact Meanings")
     st.table(impacts())
 
@@ -81,7 +83,7 @@ def graphs(data):
     # Edit data for histogram
     df = data 
     counts = df.groupby(['day']).count()
-    counts.columns = ['Reported Cases','','','','']
+    counts.columns = ['Reported Cases','','','','', '']
 
     st.subheader("Number Of Reported Cases Each Day")
     st.bar_chart(counts['Reported Cases'])
@@ -94,7 +96,7 @@ def graphs(data):
     # Campus distribution chart
     st.subheader("Campus Distribution")
     campus_count = df.groupby(['Campus']).count()
-    campus_count.columns = ['Reported Cases','','','','']
+    campus_count.columns = ['Reported Cases','','','','','']
 
     fig = px.pie(campus_count.reset_index(), values='Reported Cases',
                  names='Campus')
@@ -104,7 +106,7 @@ def graphs(data):
     # Person type distribution
     st.subheader("Employee \ Student Split")
     person_count = df.groupby(['Person']).count()
-    person_count.columns = ['Reported Cases','','','','']
+    person_count.columns = ['Reported Cases','','','','','']
 
     fig1 = px.pie(person_count.reset_index(), values='Reported Cases',
                  names='Person')
