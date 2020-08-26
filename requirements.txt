@@ -1,6 +1,7 @@
 streamlit
 beautifulsoup4
-request
+requests
 numpy
 pandas
 sklearn
+matplotlib
