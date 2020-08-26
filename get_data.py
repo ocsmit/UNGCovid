@@ -5,11 +5,6 @@ import pandas as pd
 import numpy as np
 
 url = "https://ung.edu/together/managing-covid"
-#page = requests.get(URL)
-
-#soup = BeautifulSoup(page.content, 'html.parser')
-#table = soup.find_all('table')
-
 
 class Scrape:
     def __init__(self, url):
