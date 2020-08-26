@@ -29,69 +29,93 @@ if st.sidebar.button('UNG Data Site'):
 if st.sidebar.button('Github'):
     webbrowser.open_new_tab('https://github.com/ocsmit/UNGCovid')
 
+#############
+
 # Total number of cases
 st.subheader("Total Cases Reported")
 st.header(len(data))
 
+#############
+
 # Edit data in pandas dataframe
 st.subheader("Data")
-df = pd.DataFrame(data)
-df_t = df.transpose()
-df_t.columns = ['Date', 'Person', 'Campus', 'Impact', 'latitude', 'longitude']
 
-# Edit date
-df_t.time = pd.to_datetime(df_t['Date'], format='%m-%d-%y')
-df_t['Date'] = pd.to_datetime(df_t['Date'])
-df = df_t.set_index('Date')
+@st.cache(allow_output_mutation=True)
+def data_table():
+    df_og = pd.DataFrame(data)
+    df_t = df_og.transpose()
+    df_t.columns = ['Date', 'Person', 'Campus', 'Impact', 'latitude', 'longitude']
+
+    # Edit date
+    df_t.time = pd.to_datetime(df_t['Date'], format='%m-%d-%y')
+    df_t['Date'] = pd.to_datetime(df_t['Date'])
+    dataframe = df_t.set_index('Date')
+    dataframe['day'] = dataframe.index.date
+    return dataframe
+
+def impacts():
+    # Set impacts meanings
+    impacts_def = [str('The student has not been on campus for more than two weeks'
+                       '; no campus impact'), 
+                   str('Anyone who may have been in contact with '
+                       'the student/employee has been notified, and all '
+                       'health and safety protocols are being '
+                       'followed consistent with Georgia Department '
+                        'of Public Health Protocols.')]
+
+    return pd.DataFrame(impacts_def, columns=['Impact Meaning'])
+
+
+tmp = data_table()
+df1 = tmp.copy(deep=True)
+
 
 # Show data with out latitude and longitude columns
-st.dataframe(df.drop(['latitude', 'longitude'], 1))
-
-# Set impacts meanings
-impacts_def = [str('The student has not been on campus for more than two weeks'
-                   '; no campus impact'), 
-               str('Anyone who may have been in contact with '
-               'the student/employee has been notified, and all '
-                'health and safety protocols are being '
-               'followed consistent with Georgia Department '
-               'of Public Health Protocols.')]
-
-# Show impacts meanings
-impact_df = pd.DataFrame(impacts_def, columns=['Impact Meaning'])
-
-if st.checkbox("Show Impact Definitions"):
+if st.checkbox("Data Table"):
+    st.dataframe(df1.drop(['latitude', 'longitude', 'day'], 1))
     st.subheader("Impact Meanings")
-    st.table(impact_df)
-
-# Edit data for histogram
-df['day'] = df.index.date
-counts = df.groupby(['day']).count()
-counts.columns = ['Reported Cases','','','','']
-
-st.subheader("Number Of Reported Cases Each Day")
-st.bar_chart(counts['Reported Cases'])
-
-st.subheader("Cumulative Case Chart")  
-st.line_chart(counts['Reported Cases'].cumsum())
-plt.plot(counts.cumsum())
+    st.table(impacts())
 
 
-# Campus distribution chart
-st.subheader("Campus Distribution")
-campus_count = df.groupby(['Campus']).count()
-campus_count.columns = ['Reported Cases','','','','']
+def graphs(data):
+    # Edit data for histogram
+    df = data 
+    counts = df.groupby(['day']).count()
+    counts.columns = ['Reported Cases','','','','']
 
-campus_count['Reported Cases'].plot(kind='barh')
+    st.subheader("Number Of Reported Cases Each Day")
+    st.bar_chart(counts['Reported Cases'])
 
-fig = px.pie(campus_count.reset_index(), values='Reported Cases',
-names='Campus')
+    st.subheader("Cumulative Case Chart")  
+    st.line_chart(counts['Reported Cases'].cumsum())
+    plt.plot(counts.cumsum())
 
-st.plotly_chart(fig)
+
+    # Campus distribution chart
+    st.subheader("Campus Distribution")
+    campus_count = df.groupby(['Campus']).count()
+    campus_count.columns = ['Reported Cases','','','','']
+
+    fig = px.pie(campus_count.reset_index(), values='Reported Cases',
+                 names='Campus')
+
+    st.plotly_chart(fig)
+
+    # Person type distribution
+    st.subheader("Employee \ Student Split")
+    person_count = df.groupby(['Person']).count()
+    person_count.columns = ['Reported Cases','','','','']
+
+    fig1 = px.pie(person_count.reset_index(), values='Reported Cases',
+                 names='Person')
+    st.plotly_chart(fig1)
+
+graphs(df1)
 
 # Show Campuses on a map
 if st.checkbox('Show Campus Locations'):
         st.subheader('Campus Locations')
-        st.map(df_t)
+        st.map(df1)
 
 
 
