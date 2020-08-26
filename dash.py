@@ -9,19 +9,28 @@ url = "https://ung.edu/together/managing-covid"
 
 data = Scrape(url).full_dict()
 
+# Title
 st.title("UNG Confirmed COVID Cases")
 
+# Total number of cases
+st.subheader("Total Cases Reported")
+st.header(len(data))
+
+# Edit data in pandas dataframe
 st.subheader("Data")
 df = pd.DataFrame(data)
 df_t = df.transpose()
 df_t.columns = ['Date', 'Person', 'Campus', 'Impact', 'latitude', 'longitude']
 
+# Edit date
 df_t.time = pd.to_datetime(df_t['Date'], format='%m-%d-%y')
 df_t['Date'] = pd.to_datetime(df_t['Date'])
 df = df_t.set_index('Date')
 
-st.dataframe(df)
+# Show data with out latitude and longitude columns
+st.dataframe(df.drop(['latitude', 'longitude'], 1))
 
+# Set impacts meanings
 impacts_def = [str('The student has not been on campus for more than two weeks'
                    '; no campus impact'), 
                str('Anyone who may have been in contact with '
@@ -30,19 +39,21 @@ impacts_def = [str('The student has not been on campus for more than two weeks'
                'followed consistent with Georgia Department '
                'of Public Health Protocols.')]
 
+# Show impacts meanings
 impact_df = pd.DataFrame(impacts_def, columns=['Impact Meaning'])
 
 if st.checkbox("Show Impact Definitions"):
     st.subheader("Impact Meanings")
-    st.table(impact_df)    
+    st.table(impact_df)
 
+# Edit data for histogram
 df['day'] = df.index.date
 counts = df.groupby(['day']).count()
 counts.columns = ['Reported Cases','','','','']
-#counts = pd.DataFrame(counts, columns=['count'])
 
 st.bar_chart(counts['Reported Cases'])
 
+# Show Campuses on a map
 if st.checkbox('Show Campus Locations'):
         st.subheader('Campus Locations')
         st.map(df_t)
