@@ -3,6 +3,7 @@ from bs4 import BeautifulSoup
 import streamlit as st
 import pandas as pd
 import numpy as np
+import csv
 
 url = "https://ung.edu/together/managing-covid"
 
@@ -115,6 +116,15 @@ class Scrape:
             campus, impact, lat, lon))
 
         return self.dict
+
+    def write_csv(self):
+        data = self.full_dict()
+        df = pd.DataFrame(data, index=['Date', 'Person', 'Campus', 'Impact',
+            'latitude', 'longitude'])
+        df.to_csv("scraped_data.csv")
+
+
+Scrape(url).write_csv()
 
 if __name__ == "__main__":
     print(Scrape(url).full_dict())
