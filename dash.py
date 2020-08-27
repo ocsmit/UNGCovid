@@ -6,6 +6,7 @@ import matplotlib.pyplot as plt
 import datetime
 import webbrowser
 import plotly.express as px
+import plotly.graph_objects as go
 
 
 url = "https://ung.edu/together/managing-covid"
@@ -113,10 +114,47 @@ def graphs(data):
 
 graphs(df1)
 
-# Show Campuses on a map
-if st.checkbox('Show Campus Locations'):
-        st.subheader('Campus Locations')
-        st.map(df1)
+#"""
+#df = data_table()
+#df1 = df.groupby(['Campus']).count()
+#df1.columns = ['Reported Cases','','','','','']
+#
+#dahl = [34.5278789, -83.9844275]
+#oak = [34.2347566, -83.8676613]
+#blue = [34.8512143, -84.3388137]
+#ocon = [33.866467, -83.4259915]
+#cumm = [34.2241064, -84.1085789]
+
+#:wlats = [cumm[0], dahl[0], oak[0], 0, ocon[0]]
+#longs = [cumm[1], dahl[1], oak[1], 0, ocon[1]]
+#campus_names = ["Cumming", "Dahlonega", "Gainesville", "Oconee"]
+#
+#df = df1.reset_index()
+#
+#df["lat"] = lats
+#df["lon"] = longs
+#
+#dff = df.transpose().drop(columns=[3], axis=1)
+#df = dff.transpose().set_index("Campus")
+#df['text'] = 'Campus: ' + df.index + ' | ' + 'Number of Cases: ' + \
+#        df['Reported Cases'].astype(str)
+#
+#sizes = np.array(df['Reported Cases'])
+#
+#fig = go.Figure(data=go.Scattergeo(
+#                        lon = df['lon'].astype(str),
+#                        lat = df['lat'].astype(str),
+#                        text = df['text'],
+#                        mode = 'markers',
+#                        marker_color = df['Reported Cases'],
+#                        marker_size = [10, 95, 36, 19]
+#                        ))
+#
+#fig.update_layout(geo_scope='usa')
+#
+#st.subheader("Campus Bubble Map")
+#st.plotly_chart(fig)
+#"""
 
 
 
