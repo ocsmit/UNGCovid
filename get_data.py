@@ -47,8 +47,16 @@ class Scrape:
 
         campus = []
         for tt in self.table[0].find_all('tr')[1:]:
-            campus.append(tt.find_all('td')[2].text)
+            tmp = tt.find_all('td')[2].text
+            if "Campus" in tmp:
+                split_str = tmp.split()
+                remove = ["Campus", "Campus,"]
+                edit_strs = [word for word in split_str if word not in
+                        remove]
 
+                campus.append(' '.join(edit_strs))
+            else:
+                campus.append(tmp)
         self.campus = campus
 
         return self.campus
